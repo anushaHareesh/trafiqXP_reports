@@ -1,14 +1,13 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trafiqxpreports/screen/tabbar/tabbarClickPage.dart';
 
 import '../../controller/controller.dart';
 
 class TabbarBodyView extends StatefulWidget {
+  const TabbarBodyView({super.key});
+
   @override
   State<TabbarBodyView> createState() => _TabbarBodyViewState();
 }
@@ -33,58 +32,56 @@ class _TabbarBodyViewState extends State<TabbarBodyView> {
             absorbing: value.isReportLoading ? true : false,
             child: Column(
               children: [
-                Container(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        DefaultTabController(
-                          length: value.tabList.length, // length of tabs
-                          initialIndex: 0,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              Align(
-                                alignment: Alignment.center,
-                                // color: P_Settings.bodyTabColor,
-                                child: TabBar(
-                                    isScrollable: true,
-                                    // physics: NeverScrollableScrollPhysics(),
-                                    labelColor: Colors.red,
-                                    indicatorWeight: 3,
-                                    indicatorColor: Colors.red,
-                                    unselectedLabelColor: Colors.black,
-                                    // labelPadding:
-                                    //     EdgeInsets.symmetric(horizontal: 12),
-                                    labelStyle: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                    tabs: value.tabList
-                                        .map(
-                                          (e) => Tab(
-                                            text: e.tabName.toString(),
-                                          ),
-                                        )
-                                        .toList()),
+                Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      DefaultTabController(
+                        length: value.tabList.length, // length of tabs
+                        initialIndex: 0,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            Align(
+                              alignment: Alignment.center,
+                              // color: P_Settings.bodyTabColor,
+                              child: TabBar(
+                                  isScrollable: true,
+                                  // physics: NeverScrollableScrollPhysics(),
+                                  labelColor: Colors.red,
+                                  indicatorWeight: 3,
+                                  indicatorColor: Colors.red,
+                                  unselectedLabelColor: Colors.black,
+                                  // labelPadding:
+                                  //     EdgeInsets.symmetric(horizontal: 12),
+                                  labelStyle: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  tabs: value.tabList
+                                      .map(
+                                        (e) => Tab(
+                                          text: e.tabName.toString(),
+                                        ),
+                                      )
+                                      .toList()),
+                            ),
+                            Container(
+                              height:
+                                  size.height * 0.85, //height of TabBarView
+                              decoration: const BoxDecoration(
+                                  border: Border(
+                                      top: BorderSide(
+                                          color: Colors.grey, width: 0.5))),
+                              child: TabBarView(
+                                physics: NeverScrollableScrollPhysics(),
+                                children: value.tabList.map((e) {
+                                  return customContainer(e.tabId.toString());
+                                }).toList(),
                               ),
-                              Container(
-                                height:
-                                    size.height * 0.85, //height of TabBarView
-                                decoration: BoxDecoration(
-                                    border: Border(
-                                        top: BorderSide(
-                                            color: Colors.grey, width: 0.5))),
-                                child: TabBarView(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  children: value.tabList.map((e) {
-                                    return customContainer(e.tabId.toString());
-                                  }).toList(),
-                                ),
-                              )
-                            ],
-                          ),
+                            )
+                          ],
                         ),
-                      ]),
-                ),
+                      ),
+                    ]),
               ],
             ),
           );
@@ -97,8 +94,6 @@ class _TabbarBodyViewState extends State<TabbarBodyView> {
   Widget customContainer(String e) {
     return Consumer<Controller>(
       builder: (context, value, child) {
-        
-
         return Container(
           child: TabbarClickPage(
             tabId: e,
@@ -109,32 +104,31 @@ class _TabbarBodyViewState extends State<TabbarBodyView> {
     );
   }
 
-  checkShred(String br, String e) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String key = e + "key";
-
-    final rawJson = prefs.getString(key) ?? '';
-    print("rawjson----$br--$key---$rawJson");
-    if (rawJson == null || rawJson.isEmpty) {
-      Provider.of<Controller>(context, listen: false).loadReportData(
-        context,
-        e,
-        todaydate,
-        todaydate,
-        br,
-      );
-    } else {
-      List<Map<String, dynamic>> map = [];
-      map = (jsonDecode(rawJson) as List)
-          .map((dynamic e) => e as Map<String, dynamic>)
-          .toList();
-      // var map1 = jsonDecode(rawJson);
-      // map.clear();
-      // for (var item in map1) {
-      //   map.add(item);
-      // }
-      await Provider.of<Controller>(context, listen: false)
-          .loaclStorageData(map);
-    }
-  }
+  // checkShred(String br, String e) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String key = e + "key";
+  //   final rawJson = prefs.getString(key) ?? '';
+  //   print("rawjson----$br--$key---$rawJson");
+  //   if (rawJson == null || rawJson.isEmpty) {
+  //     Provider.of<Controller>(context, listen: false).loadReportData(
+  //       context,
+  //       e,
+  //       todaydate,
+  //       todaydate,
+  //       br,
+  //     );
+  //   } else {
+  //     List<Map<String, dynamic>> map = [];
+  //     map = (jsonDecode(rawJson) as List)
+  //         .map((dynamic e) => e as Map<String, dynamic>)
+  //         .toList();
+  //     // var map1 = jsonDecode(rawJson);
+  //     // map.clear();
+  //     // for (var item in map1) {
+  //     //   map.add(item);
+  //     // }
+  //     await Provider.of<Controller>(context, listen: false)
+  //         .loaclStorageData(map);
+  //   }
+  // }
 }

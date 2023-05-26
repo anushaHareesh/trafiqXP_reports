@@ -298,7 +298,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     fontWeight: FontWeight.w500,
                                     textStyle:
                                         Theme.of(context).textTheme.bodyText2,
-                                    fontSize: 17,
+                                    fontSize: 14,
                                   ),
                                 ),
                                 Icon(Icons.logout)

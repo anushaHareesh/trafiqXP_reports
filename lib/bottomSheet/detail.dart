@@ -11,10 +11,10 @@ import '../components/globalData.dart';
 
 class DetailedInfoSheet {
   showInfoSheet(BuildContext context, String text) {
-    Size size = MediaQuery.of(context).size;
-    String? payment_mode;
-    CustomSnackbar snackbar = CustomSnackbar();
-    String imgGlobal = Globaldata.imageurl;
+    // Size size = MediaQuery.of(context).size;
+    // String? payment_mode;
+    // CustomSnackbar snackbar = CustomSnackbar();
+    // String imgGlobal = Globaldata.imageurl;
 
     var data = {
       "id": "6",

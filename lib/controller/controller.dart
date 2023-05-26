@@ -392,7 +392,7 @@ class Controller extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? cid = prefs.getString("cid");
     String? user_id = prefs.getString("user_id");
-
+    var map;
     NetConnection.networkConnection(context).then((value) async {
       if (value == true) {
         try {
@@ -407,65 +407,53 @@ class Controller extends ChangeNotifier {
             "till_date": tilldate
           };
           print("load report body----$body");
-
           isReportLoading = true;
           notifyListeners();
-
+          // var client = http.Client();
+          // try {
+          //   var response = await client.post(
+          //       Uri.https("trafiqerp.in", '/rapi_xp/load_report.php'),
+          //       body: body);
+          //   map = jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+          //   print("from map------$map");
+          //   // var uri = Uri.parse(map['uri'] as String);
+          //   // print(await client.get(uri));
+          // } finally {
+          //   client.close();
+          // }
+          // http.Response response = await http.post(
+          //   url,
+          //   body: body,
+          // );
+          // var map = jsonDecode(response.body);
+          // String encodeData = jsonEncode(map);
+          // print("json encoded data from gets storage------$encodeData");
+          // String key = tab_id.toString() + "key";
+          // print("key key-----$key");
+          // prefs.setString(key, encodeData);
+          // final rawJson = prefs.getString(key) ?? '';
+          // var map1 = jsonDecode(rawJson);
+          // print("decoded-----$map");
+          // list.clear();
+          // for (var item in map1) {
+          //   list.add(item);
+          // }
+          // isReportLoading = false;
+          // notifyListeners();
           http.Response response = await http.post(
             url,
             body: body,
           );
           var map = jsonDecode(response.body);
-          String encodeData = jsonEncode(map);
-          print("json encoded data from gets storage------$encodeData");
-          String key = tab_id.toString() + "key";
-          print("key key-----$key");
-          prefs.setString(key, encodeData);
-          final rawJson = prefs.getString(key) ?? '';
-          var map1 = jsonDecode(rawJson);
-          print("decoded-----$map");
+          print("load report data------${map.runtimeType}");
           list.clear();
-          for (var item in map1) {
-            list.add(item);
+          if (map != null) {
+            for (var item in map) {
+              list.add(item);
+            }
           }
           isReportLoading = false;
           notifyListeners();
-          // /// this is where you fetch the data
-          // var data = GetStorageUtility.read("key");
-          // // print("data--getstorage---------------${data}");
-          // if (data == null) {
-          //   print('no data in GetStorage');
-          // } else {
-          //   print("data runtyme-----------${data.runtimeType}");
-          //   List<dynamic> jsonData = jsonDecode(data) as List<dynamic>;
-          //   // List<dynamic>  jsonData = jsonDecode(data);
-          //   print("jsonnnnnnn----------------${jsonData.runtimeType}");
-
-          //   list.clear();
-          //   // jsonData.forEach((key, value) {
-          //   //   print("$key :  $value\n");
-          //   // });
-
-          //   for (var item in jsonData) {
-          //     list.add(item);
-          //   }
-
-          //   isReportLoading = false;
-          //   notifyListeners();
-          // }
-          // print("response.body------${response.body.runtimeType}");
-
-          // var map = jsonDecode(response.body);
-          // print("load report data------${map.runtimeType}");
-          // list.clear();
-          // if (map != null) {
-          //   for (var item in map) {
-          //     list.add(item);
-          //   }
-          // }
-
-          // isReportLoading = false;
-          // notifyListeners();
         } catch (e) {
           print(e);
           return null;
