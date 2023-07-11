@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trafiqxpreports/components/commonColor.dart';
 import 'package:trafiqxpreports/controller/controller.dart';
 import 'package:trafiqxpreports/screen/customReport.dart';
+import 'package:trafiqxpreports/screen/product_search_history.dart';
 import 'package:trafiqxpreports/screen/tabbar/tabbarBodyView.dart';
 
 import '../components/dateFind.dart';
@@ -64,12 +65,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       tabId = Provider.of<Controller>(context, listen: false).tab_index!;
     }
     Provider.of<Controller>(context, listen: false).loadReportData(
-        context,
-        tabId,
-        Provider.of<Controller>(context, listen: false).fromDate.toString(),
-        Provider.of<Controller>(context, listen: false).todate,
-        Provider.of<Controller>(context, listen: false).brId!,
-       );
+      context,
+      tabId,
+      Provider.of<Controller>(context, listen: false).fromDate.toString(),
+      Provider.of<Controller>(context, listen: false).todate,
+      Provider.of<Controller>(context, listen: false).brId!,
+    );
     _refreshController.refreshCompleted();
   }
 
@@ -275,6 +276,34 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         //   ),
                         // ),
                         Column(children: drawerOpts),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(
+                        //       left: 8.0, right: 8, top: 10, bottom: 8),
+                        //   child: InkWell(
+                        //     onTap: () async {
+                        //       // _key.currentState!.closeDrawer();
+                        //       Navigator.push(
+                        //           context,
+                        //           MaterialPageRoute(
+                        //               builder: (context) => ProductHistory()));
+                        //     },
+                        //     child: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //       children: [
+                        //         Text(
+                        //           "PRODUCT SEARCH",
+                        //           style: GoogleFonts.aBeeZee(
+                        //             fontWeight: FontWeight.w500,
+                        //             textStyle:
+                        //                 Theme.of(context).textTheme.bodyText2,
+                        //             fontSize: 14,
+                        //           ),
+                        //         ),
+                        //         Icon(Icons.search)
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
                         Padding(
                           padding: const EdgeInsets.only(
                               left: 8.0, right: 8, top: 10, bottom: 8),
@@ -496,12 +525,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     Provider.of<Controller>(context,
                                             listen: false)
                                         .loadReportData(
-                                            context,
-                                            value.customIndex.toString(),
-                                            value.fromDate!,
-                                            value.todate!,
-                                            br,
-                                            );
+                                      context,
+                                      value.customIndex.toString(),
+                                      value.fromDate!,
+                                      value.todate!,
+                                      br,
+                                    );
                                     Navigator.pop(context);
                                   },
                                   child: Text(

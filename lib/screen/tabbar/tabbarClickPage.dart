@@ -27,6 +27,7 @@ class TabbarClickPage extends StatefulWidget {
 
 class _TabbarClickPageState extends State<TabbarClickPage> {
   DateTime now = DateTime.now();
+  // var jsonEncoded;
   String? todaydate;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -36,8 +37,9 @@ class _TabbarClickPageState extends State<TabbarClickPage> {
   Color? generatedColor;
   int? generatedColorInt;
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  // final searchController = TextEditingController();
 //////////////////////////////////////////////////////////////
-  ///
+  List<dynamic> filteredData = [];
   Color parseColor(String color) {
     print("Colorrrrr...$color");
     String hex = color.replaceAll("#", "");
@@ -141,7 +143,7 @@ class _TabbarClickPageState extends State<TabbarClickPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final ScrollController _firstController = ScrollController();
+    // final ScrollController _firstController = ScrollController();
     return SingleChildScrollView(
       key: _keyLoader,
       // color: Colors.yellow,
@@ -177,9 +179,7 @@ class _TabbarClickPageState extends State<TabbarClickPage> {
                 shrinkWrap: true,
                 itemCount: value.list.length,
                 itemBuilder: (context, index) {
-                 
-                    return customCard(size, value.list[index], index);
-                 
+                  return customCard(size, value.list[index], index);
                 },
               );
             }
@@ -206,9 +206,9 @@ class _TabbarClickPageState extends State<TabbarClickPage> {
                     padding: const EdgeInsets.only(top: 10),
                     child: Center(
                       child: Text(
-                        listMap["title"],
+                        listMap["title"].toString().toUpperCase(),
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -226,8 +226,9 @@ class _TabbarClickPageState extends State<TabbarClickPage> {
           );
         } else {
           var jsonEncoded = json.encode(listMap);
-
-          print("suishuisfhuidh-----------------$jsonEncoded");
+          // Provider.of<Controller>(context, listen: false)
+          //     .setjsonEncode(jsonEncoded);
+          // print("suishuisfhuidh-----------------${jsonEncoded}");
           List<dynamic> listdata = listMap["data"];
           Provider.of<Controller>(context, listen: false)
               .getLegends(listdata, listMap["title"]);
@@ -250,12 +251,30 @@ class _TabbarClickPageState extends State<TabbarClickPage> {
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Center(
                           child: Text(
-                            listMap["title"],
+                            listMap["title"].toString().toUpperCase(),
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                                fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
+                      // Divider(),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Container(
+                //     // height: 40,
+                //     child: TextField(
+                //       controller: value.listEditor[parentIndex],
+                //       decoration: const InputDecoration(
+                //         hintText: 'Search...',
+                //         border: OutlineInputBorder(),
+                //       ),
+                //       onChanged: (value) async {
+                //         Provider.of<Controller>(context, listen: false)
+                //             .onSearchTextChanged(value, listMap);
+                //       },
+                //     ),
+                //   ),
+                // ),
                 // Center(
                 //   child: listMap["title"] == null || listMap["title"].isEmpty
                 //       ? Container()
@@ -354,7 +373,7 @@ class _TabbarClickPageState extends State<TabbarClickPage> {
                         ),
                       ),
                 Container(
-                    height: (35 * listMap["data"].length) + 80,
+                    // height: (35 * listMap["data"].length) + 80,
                     // ? (35 * listMap["data"].length) + 80
                     // : (35 * listMap["data"].length) + 80 + 20,
                     // ? size.height * (listMap["data"].length / 16)
@@ -363,7 +382,7 @@ class _TabbarClickPageState extends State<TabbarClickPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        GraphDataTable(decodd: jsonEncoded),
+                        GraphDataTable(decodd: jsonEncoded, index: parentIndex),
                         // listMap["data"].length > 4
                         //     ? Container(
                         //         height: 50,
@@ -415,4 +434,20 @@ class _TabbarClickPageState extends State<TabbarClickPage> {
       },
     );
   }
+
+  // void _onSearchTextChanged(String text, List list) {
+  //   setState(() {
+  //     filteredData = text.isEmpty
+  //         ? list
+  //         : list
+  //             .where((item) =>
+  //                 item['DESCRIPTION']
+  //                     .toLowerCase()
+  //                     .contains(text.toLowerCase()) ||
+  //                 item['VALUE'].toLowerCase().contains(text.toLowerCase()))
+  //             .toList();
+  //     jsonEncoded = json.encode(filteredData);
+  //     print("filtered data----$jsonEncoded");
+  //   });
+  // }
 }

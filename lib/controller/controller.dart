@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_to_hex/string_to_hex.dart';
@@ -23,6 +25,9 @@ import '../services/dbHelper.dart';
 
 class Controller extends ChangeNotifier {
   String clicked = "0";
+  List<dynamic> filteredData = [];
+  var jsonEncoded;
+  List<TextEditingController> listEditor = [];
   String? fp;
   String? cid;
   ExternalDir externalDir = ExternalDir();
@@ -32,6 +37,7 @@ class Controller extends ChangeNotifier {
   int? qtyinc;
   List<CD> c_d = [];
   String? firstMenu;
+  bool isSearch = false;
   String? tabId;
   String? brId;
   String? showGraph;
@@ -39,7 +45,7 @@ class Controller extends ChangeNotifier {
   String? customIndex;
   bool isLoading = false;
   bool isLoginLoad = false;
-
+  bool issearching = false;
   bool isReportLoading = false;
   bool isSubReportLoading = false;
 
@@ -72,6 +78,9 @@ class Controller extends ChangeNotifier {
 
   List<TabsModel> customMenuList = [];
   List<Map<String, dynamic>> branches = [];
+  List<Map<String, dynamic>> productHistory = [];
+  List<Map<String, dynamic>> productList = [];
+  List<Map<String, dynamic>> newList = [];
 
   List<TabsModel> tabList = [];
   List<Map<String, dynamic>> legendList = [];
@@ -316,72 +325,72 @@ class Controller extends ChangeNotifier {
 ///////////////////////////////////////////////////////////////////
   getData() {
     List<Map<String, dynamic>> barListShow = [];
-    list = [
-      {
-        "id": "0",
-        "title": "Sale1",
-        "sum": "NYY",
-        "align": "LRR",
-        "width": "60,20,20",
-        "data": [
-          {"date": "4-2022", "Qty": "61703110", "val(k)": "61703110.07"},
-          {"date": "5-2022", "Qty": "61703110", "val(k)": "61703110.07"},
-          {"date": "6-2022", "Qty": "61703110", "val(k)": "61703110.07"},
-        ]
-      }
-    ];
     // list = [
     //   {
     //     "id": "0",
-    //     "title": "Sale Report1",
+    //     "title": "Sale1",
     //     "sum": "NYY",
     //     "align": "LRR",
     //     "width": "60,20,20",
     //     "data": [
-    //       {"date": "20/10/2022", "amount1": "100", "amount2": "327"},
-    //       {"date": "4/8/2022", "amount1": "200", "amount2": "190"},
-    //       {"date": "2/10/2022", "amount1": "300", "amount2": "206"},
-    //       {"date": "1/2/2022", "amount1": "400", "amount2": "100"},
+    //       {"date": "4-2022", "Qty": "61703110", "val(k)": "61703110.07"},
+    //       {"date": "5-2022", "Qty": "61703110", "val(k)": "61703110.07"},
+    //       {"date": "6-2022", "Qty": "61703110", "val(k)": "61703110.07"},
     //     ]
-    //   },
-    //   // {
-    //   //   "id": "1",
-    //   //   "title": "anushak",
-    //   //   "sum": "NY",
-    //   //   "align": "LR",
-    //   //   "width": "60,40",
-    //   //   "data": [
-    //   //     {"date": "20/10/2022", "amount2": "100"},
-    //   //     {"date": "4/8/2022", "amount2": "200"},
-    //   //     {"date": "2/10/2022", "amount2": "300"},
-    //   //     {"date": "1/10/2022", "amount2": "100"},
-    //   //     {"date": "6/8/2022", "amount2": "1000"},
-    //   //     // {"date": "8/10/2022", "amount2": "400"},
-    //   //   ]
-    //   // },
-    //   // {
-    //   //   "id": "2",
-    //   //   "title": "Sale Report3",
-    //   //   "data": [
-    //   //     {
-    //   //       "date": "20/10/2022",
-    //   //       "amount1": "10",
-    //   //     },
-    //   //     {
-    //   //       "date": "4/8/2022",
-    //   //       "amount1": "200",
-    //   //     },
-    //   //     {
-    //   //       "date": "2/10/2022",
-    //   //       "amount1": "300",
-    //   //     },
-    //   //     {
-    //   //       "date": "1/2/2022",
-    //   //       "amount1": "400",
-    //   //     },
-    //   //   ]
-    //   // },
+    //   }
     // ];
+    list = [
+      {
+        "id": "0",
+        "title": "Sale Report1",
+        "sum": "NYY",
+        "align": "LRR",
+        "width": "60,20,20",
+        "data": [
+          {"date": "20/10/2022", "amount1": "100", "amount2": "327"},
+          {"date": "4/8/2022", "amount1": "200", "amount2": "190"},
+          {"date": "2/10/2022", "amount1": "300", "amount2": "206"},
+          {"date": "1/2/2022", "amount1": "400", "amount2": "100"},
+        ]
+      },
+      {
+        "id": "1",
+        "title": "anushak",
+        "sum": "NY",
+        "align": "LR",
+        "width": "60,40",
+        "data": [
+          {"date": "20/10/2022", "amount2": "100"},
+          {"date": "4/8/2022", "amount2": "200"},
+          {"date": "2/10/2022", "amount2": "300"},
+          {"date": "1/10/2022", "amount2": "100"},
+          {"date": "6/8/2022", "amount2": "1000"},
+          // {"date": "8/10/2022", "amount2": "400"},
+        ]
+      },
+      // {
+      //   "id": "2",
+      //   "title": "Sale Report3",
+      //   "data": [
+      //     {
+      //       "date": "20/10/2022",
+      //       "amount1": "10",
+      //     },
+      //     {
+      //       "date": "4/8/2022",
+      //       "amount1": "200",
+      //     },
+      //     {
+      //       "date": "2/10/2022",
+      //       "amount1": "300",
+      //     },
+      //     {
+      //       "date": "1/2/2022",
+      //       "amount1": "400",
+      //     },
+      //   ]
+      // },
+    ];
 
     descTextShowFlag = List.generate(list.length, (index) => false);
   }
@@ -440,18 +449,26 @@ class Controller extends ChangeNotifier {
           // }
           // isReportLoading = false;
           // notifyListeners();
+
           http.Response response = await http.post(
             url,
             body: body,
           );
           var map = jsonDecode(response.body);
-          print("load report data------${map.runtimeType}");
+          print("load report data------${map}");
+          // String jsone = jsonEncode(map);
+          // _write(jsone, tab_id);
+          // String readVal = await _read();
+          // var haa = jsonDecode(readVal);
+          // print("nnsnbsn----$haa");
           list.clear();
           if (map != null) {
             for (var item in map) {
               list.add(item);
             }
           }
+          listEditor =
+              List.generate(list.length, (index) => TextEditingController());
           isReportLoading = false;
           notifyListeners();
         } catch (e) {
@@ -462,6 +479,56 @@ class Controller extends ChangeNotifier {
     });
     notifyListeners();
   }
+  // loadReportData(BuildContext context, String tab_id, String? fromdate,
+  //     String? tilldate, String b_id) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? cid = prefs.getString("cid");
+  //   String? user_id = prefs.getString("user_id");
+  //   var map;
+  //   NetConnection.networkConnection(context).then((value) async {
+  //     if (value == true) {
+  //       try {
+  //         print("pishkuu---$fromDate----$tilldate----$b_id");
+  //         Uri url = Uri.parse("$urlgolabl/load_report.php");
+  //         Map body = {
+  //           "c_id": cid,
+  //           "b_id": b_id,
+  //           'user_id': user_id,
+  //           "tab_id": tab_id,
+  //           "from_date": fromdate,
+  //           "till_date": tilldate
+  //         };
+  //         print("load report body----$body");
+  //         isReportLoading = true;
+  //         notifyListeners();
+  //         var client = http.Client();
+  //         try {
+  //           var response = await client.post(
+  //               Uri.https("trafiqerp.in", '/rapi_xp/load_report.php'),
+  //               body: body);
+  //           var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes));
+  //           print("decodedResponse---$decodedResponse");
+  //           // var uri = Uri.parse(decodedResponse['uri'] as String);
+  //           // print(await client.get(uri));
+  //           list.clear();
+  //           if (decodedResponse != null) {
+  //             for (var item in decodedResponse) {
+  //               list.add(item);
+  //             }
+  //           }
+  //           isReportLoading = false;
+  //           notifyListeners();
+  //         } finally {
+  //           client.close();
+  //         }
+  //       } catch (e) {
+  //         print(e);
+  //         return null;
+  //       }
+  //     }
+  //   });
+  //   notifyListeners();
+  // }
 
   /////////////////////////////////////////////////////////
   loaclStorageData(List<Map<String, dynamic>> list1) async {
@@ -547,7 +614,6 @@ class Controller extends ChangeNotifier {
       c = {
         key: color1,
       };
-
       // listColor.add(c);
       legends.add(key);
       keyIndex = keyIndex + 1;
@@ -642,6 +708,104 @@ class Controller extends ChangeNotifier {
 
   setClicked(String clik) {
     clicked = clik;
+    notifyListeners();
+  }
+
+  getProducts(
+    BuildContext context,
+  ) {
+    NetConnection.networkConnection(context).then((value) async {
+      if (value == true) {
+        try {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          String? branchId = prefs.getString("branch_id");
+          String? userId = prefs.getString("user_id");
+          Uri url = Uri.parse("$urlgolabl/load_report.php");
+          Map body = {
+            'staff_id': userId,
+            'branch_id': branchId,
+          };
+          // ignore: avoid_print
+          print("menu body--$body");
+          isLoading = true;
+          notifyListeners();
+
+          productList = [
+            {"id": "1", "item": "cool cake", "stock": "200"},
+            {"id": "2", "item": "groundnut", "stock": "200"},
+            {"id": "3", "item": "sugar", "stock": "200"},
+            {"id": "4", "item": "tool dall organic", "stock": "200"},
+            {"id": "5", "item": "garlic luduva", "stock": "200"},
+            {"id": "6", "item": "moong dall", "stock": "200"}
+          ];
+          // http.Response response = await http.post(url, body: body);
+          // var map = jsonDecode(response.body);
+          // // ignore: avoid_print
+          // print("map----$map");
+          // productList.clear();
+          // for (var item in map) {
+          //   productList.add(item);
+          // }
+          isLoading = false;
+          notifyListeners();
+        } catch (e) {
+          // return null;
+          return [];
+        }
+      }
+    });
+  }
+
+  productSearchHistory(BuildContext context, String text) {
+    NetConnection.networkConnection(context).then((value) async {
+      if (value == true) {
+        try {
+          issearching = true;
+          notifyListeners();
+          if (text.isNotEmpty) {
+            isSearch = true;
+            notifyListeners();
+            newList = productList
+                .where((e) =>
+                    e["item"].contains(text) || e["item"].startsWith(text))
+                .toList();
+          } else
+            newList = productList;
+          issearching = false;
+          notifyListeners();
+          print("new list----$newList");
+        } catch (e) {
+          // return null;
+          return [];
+        }
+      }
+    });
+  }
+
+  _write(String text, String filename) async {
+    print("bhjjhd ---$text");
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final File file = File('${directory.path}/$filename.txt');
+    print("textbbb----$text");
+    await file.writeAsString(text);
+  }
+
+  Future<String> _read() async {
+    String? text;
+    try {
+      final Directory directory = await getApplicationDocumentsDirectory();
+      final File file = File('${directory.path}/my_file.txt');
+      text = await file.readAsString();
+      print(" read file ---- $text");
+    } catch (e) {
+      text = "";
+      print("Couldn't read file");
+    }
+    return text;
+  }
+
+  setIssearch(bool val) {
+    isSearch = val;
     notifyListeners();
   }
 }

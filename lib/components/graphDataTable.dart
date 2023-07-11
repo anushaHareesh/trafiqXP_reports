@@ -4,21 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trafiqxpreports/bottomSheet/detail.dart';
 import 'package:trafiqxpreports/components/commonColor.dart';
+import 'package:trafiqxpreports/controller/controller.dart';
 
 class GraphDataTable extends StatefulWidget {
   var decodd;
-  GraphDataTable({required this.decodd});
+  int index;
+  GraphDataTable({required this.decodd, required this.index});
 
   @override
   State<GraphDataTable> createState() => _GraphDataTableState();
 }
 
 class _GraphDataTableState extends State<GraphDataTable> {
+  int _currentSortColumn = 0;
+  bool _isSortAsc = true;
   DetailedInfoSheet info = DetailedInfoSheet();
   Map<String, dynamic> mapTabledata = {};
   List<String> tableColumn = [];
   Map<String, dynamic> valueMap = {};
   List<Map<dynamic, dynamic>> newMp = [];
+  List<Map<dynamic, dynamic>> filteredList = [];
   List<dynamic> rowMap = [];
   double? datatbleWidth;
   final ScrollController _scrollController = ScrollController();
@@ -37,17 +42,21 @@ class _GraphDataTableState extends State<GraphDataTable> {
       tableColumn.add(key);
     });
     newMp.clear();
+    filteredList.clear();
     calculateSum(mapTabledata["data"], mapTabledata["data"][0].length,
         mapTabledata["sum"]);
     rowMap.forEach((element) {
       print("element-----$element");
       newMp.add(element);
+      filteredList.add(element);
     });
     print("newMp---${newMp}");
   }
 
 //////////////////////////////////////////////////////////////////////////////
   Widget build(BuildContext context) {
+    // FocusScope.of(context).requestFocus(FocusNode());
+
     Size size = MediaQuery.of(context).size;
     datatbleWidth = size.width * 0.95;
     print(
@@ -58,34 +67,107 @@ class _GraphDataTableState extends State<GraphDataTable> {
         width: datatbleWidth,
         child: Scrollbar(
           controller: _scrollController,
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              showCheckboxColumn: false,
-              // border: TableBorder(
-              //   top: BorderSide(color: Colors.grey, width: 0.5),
-              //   bottom: BorderSide(color: Colors.grey, width: 0.5),
-              //   left: BorderSide(color: Colors.grey, width: 0.5),
-              //   right: BorderSide(color: Colors.grey, width: 0.5),
-              // ),
-              // headingRowColor: MaterialStateProperty.resolveWith<Color?>(
-              //     (Set<MaterialState> states) {
-              //   return P_Settings.lavender;
-              // }),
-              // dataRowColor:Colors. ,
-              columnSpacing: 7,
-              headingRowHeight: 40,
-              dataRowHeight: 35,
-              horizontalMargin: 5,
-              // decoration: BoxDecoration(color: P_Settings.bar1Color),
-              // border: TableBorder.all(
-              //   color: P_Settings.bar1Color,
-              // ),
-              columns: getColumns(tableColumn, mapTabledata["align"],
-                  mapTabledata["width"], mapTabledata["sum"]),
-              rows: getRowss(newMp, mapTabledata["align"],
-                  mapTabledata["width"], mapTabledata["sum"]),
+          child: Consumer<Controller>(
+            builder: (context, value, child) => Column(
+              children: [
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 8.0, bottom: 8),
+                //   child: Container(
+                //     height: size.height * 0.05,
+                //     // width: 200,
+                //     // margin: EdgeInsets.only(left: 3, right:3),
+                //     child: TextFormField(
+                //       controller: value.listEditor[widget.index],
+                //       //   decoration: const InputDecoration(,
+                //       onChanged: (value) {
+                //         setState(() {
+                //           filteredList =
+                //               value.isEmpty || value == null || value == " "
+                //                   ? newMp
+                //                   : newMp
+                //                       .where((item) => item['Supplier']
+                //                               .toLowerCase()
+                //                               .contains(value.toLowerCase())
+                //                           //     ||
+                //                           // item['VALUE']
+                //                           //     .toLowerCase()
+                //                           //     .contains(text.toLowerCase())
+
+                //                           )
+                //                       .toList();
+                //           print("after filter-------$newMp");
+                //         });
+                //       },
+                //       decoration: InputDecoration(
+                //         prefixIcon: Icon(
+                //           Icons.search,
+                //           color: Colors.blue,
+                //         ),
+                //         // suffixIcon: IconButton(
+                //         //   icon: new Icon(Icons.cancel),
+                //         //   onPressed: () {
+                //         //     // Provider.of<QuotationController>(context,
+                //         //     //         listen: false)
+                //         //     //     .setQuotSearch(false);
+                //         //     value.listEditor[widget.index].text=" ";
+                //         //     value.listEditor[widget.index].clear();
+                //         //   },
+                //         // ),
+                //         contentPadding:
+                //             EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                //         border: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(10.0),
+                //           borderSide: const BorderSide(
+                //               color: Color.fromARGB(255, 128, 125, 125),
+                //               width: 0.0),
+                //         ),
+                //         focusedBorder: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(10.0),
+                //           borderSide: const BorderSide(
+                //               color: Color.fromARGB(255, 128, 125, 125),
+                //               width: 0.0),
+                //         ),
+                //         enabledBorder: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(10.0),
+                //           borderSide: BorderSide(
+                //               color: Color.fromARGB(255, 128, 125, 125),
+                //               width: 0.0),
+                //         ),
+                //         // filled: true,
+                //         hintStyle: TextStyle(color: Colors.blue, fontSize: 13),
+                //         hintText: "Search here.. ",
+                //         // fillColor: Colors.grey[100]
+                //       ),
+                //     ),
+                
+                //   ),
+                // ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: (8.0)),
+                  child: DataTable(
+                    showCheckboxColumn: false,
+                    columnSpacing: 7,
+                    headingRowHeight: 40,
+                    dataRowHeight: 35,
+                    horizontalMargin: 5,
+                    // sortColumnIndex: _currentSortColumn,
+                    // sortAscending: _isSortAsc,
+                    // decoration: BoxDecoration(color: P_Settings.bar1Color),
+                    // border: TableBorder.all(
+                    //   color: P_Settings.bar1Color,
+                    // ),
+                    // headingRowColor:MaterialStateProperty.all(Color.fromARGB(255, 238, 236, 236)) ,
+                    columns: getColumns(tableColumn, mapTabledata["align"],
+                        mapTabledata["width"], mapTabledata["sum"]),
+                    rows: getRowss(
+                        filteredList,
+                        mapTabledata["align"],
+                        mapTabledata["width"],
+                        mapTabledata["sum"],
+                        value.listEditor[widget.index]),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -100,7 +182,7 @@ class _GraphDataTableState extends State<GraphDataTable> {
     String colsName;
     double colwidth = 0.0;
     List<DataColumn> datacolumnList = [];
-    print("alignment --------${alignment.length}-----$columns---$width");
+    print("alignment --------${rowMap}");
     List<String> ws = width.split(',');
 
     for (int i = 0; i < columns.length; i++) {
@@ -111,6 +193,17 @@ class _GraphDataTableState extends State<GraphDataTable> {
       }
       colwidth = colwidth * 0.94;
       datacolumnList.add(DataColumn(
+        // onSort: (columnIndex, _) {
+        //   setState(() {
+        //     _currentSortColumn = columnIndex;
+        //     if (_isSortAsc) {
+        //       newMp.sort((a, b) => b[columns[0]].compareTo(a[columns[0]]));
+        //     } else {
+        //       newMp.sort((a, b) => a[columns[0]].compareTo(b[columns[0]]));
+        //     }
+        //     _isSortAsc = !_isSortAsc;
+        //   });
+        // },
         label: ConstrainedBox(
           constraints: BoxConstraints(minWidth: colwidth, maxWidth: colwidth),
           child: Padding(
@@ -139,21 +232,24 @@ class _GraphDataTableState extends State<GraphDataTable> {
   }
 
   ////////////////////////////////////////////////////////////////
-  List<DataRow> getRowss(
-      List<Map<dynamic, dynamic>> row, String align, String width, String sum) {
+  List<DataRow> getRowss(List<Map<dynamic, dynamic>> row, String align,
+      String width, String sum, TextEditingController controller) {
     print("rowjsjfkd-----$row");
     List<DataRow> items = [];
 
-    var itemList = newMp;
+    var itemList = filteredList;
     for (var r = 0; r < itemList.length; r++) {
       items.add(DataRow(
-          // onSelectChanged: (selected) {
-          //   if (selected!) {
-
-          //   }
-          // },
+          onSelectChanged: (selected) {
+            print("selected------$selected");
+            if (selected!) {
+              showModalSheet(itemList[r]);
+            }
+          },
           color: r == itemList.length - 1
-              ? MaterialStateProperty.all(P_Settings.sumColor)
+              ? controller.text == ""
+                  ? MaterialStateProperty.all(P_Settings.sumColor)
+                  : MaterialStateProperty.all(P_Settings.rowColor)
               : MaterialStateProperty.all(P_Settings.rowColor),
           cells: getCelle(itemList[r], align, width, sum)));
     }
@@ -194,7 +290,20 @@ class _GraphDataTableState extends State<GraphDataTable> {
             double d = double.parse(value);
             dval = d.toStringAsFixed(2);
           } else {
-            dval = value;
+            print("ghdhjd---$value");
+            if (value == null || value.isEmpty || value == " ") {
+              dval = value;
+            } else {
+              RegExp _numeric = RegExp(r'^-?(([0-9]*)|(([0-9]*)\.([0-9]*)))$');
+              bool isnum = _numeric.hasMatch(value);
+              print("isnum ----$isnum-----$_numeric");
+              if (isnum) {
+                double d = double.parse(value);
+                dval = d.toStringAsFixed(2);
+              } else {
+                dval = value;
+              }
+            }
             // double d = double.parse(value);
             // dval = d.toStringAsFixed(2);
           }
@@ -253,5 +362,40 @@ class _GraphDataTableState extends State<GraphDataTable> {
     }
     element.add(map);
     print("sum-----$element");
+  }
+
+  showModalSheet(Map map) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0, top: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.red,
+                      ))
+                ],
+              ),
+            ),
+            Text(
+              map["Supplier"].toString().toUpperCase(),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
