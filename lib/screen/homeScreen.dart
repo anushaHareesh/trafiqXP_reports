@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       : Flexible(
                           child: Text(
                             cname.toString(),
-                            style: TextStyle(fontSize: 13),
+                            style: TextStyle(fontSize: 13,color: Colors.white),
                           ),
                         ),
                   InkWell(
@@ -115,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               Text(
                                 // "dvjhsdjhdhjbsdjhbsdjsbdjhsdhs",
                                 "${value.selected.toString()}",
-                                style: TextStyle(fontSize: 14),
+                                style: TextStyle(fontSize: 14,color: Colors.white),
                               ),
                               Icon(
                                 Icons.arrow_drop_down,
