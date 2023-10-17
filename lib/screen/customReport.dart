@@ -295,7 +295,11 @@ class _CustomReportState extends State<CustomReport> {
                                     //           )
                                     // ],
                                   ),
-                                  child: GraphDataTable(decodd: jsonEncoded,index: parentIndex,)),
+                                  child: GraphDataTable(
+                                    decodd: jsonEncoded,
+                                    index: parentIndex,
+                                    keyVal: listMap["search"],
+                                  )),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [

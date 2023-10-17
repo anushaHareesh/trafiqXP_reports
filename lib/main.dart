@@ -7,7 +7,11 @@ import 'package:trafiqxpreports/components/commonColor.dart';
 import 'package:trafiqxpreports/controller/controller.dart';
 import 'package:trafiqxpreports/screen/splashScreen.dart';
 
-// company key ---RPF23TYXLRLR
+// andra -----company key ---RPF23TYXLRLR
+//  user-----shameem,, pwd---123
+
+// pk holdings-----RHVZT0N9LRLR
+// user------user,pwd---123
 void requestPermission() async {
   var status = await Permission.storage.status;
   // var statusbl= await Permission.bluetooth.status;

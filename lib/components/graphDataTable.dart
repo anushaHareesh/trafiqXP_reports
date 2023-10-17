@@ -9,13 +9,16 @@ import 'package:trafiqxpreports/controller/controller.dart';
 class GraphDataTable extends StatefulWidget {
   var decodd;
   int index;
-  GraphDataTable({required this.decodd, required this.index});
+  String keyVal;
+  GraphDataTable(
+      {required this.decodd, required this.index, required this.keyVal});
 
   @override
   State<GraphDataTable> createState() => _GraphDataTableState();
 }
 
 class _GraphDataTableState extends State<GraphDataTable> {
+  String? key;
   int _currentSortColumn = 0;
   bool _isSortAsc = true;
   DetailedInfoSheet info = DetailedInfoSheet();
@@ -51,6 +54,11 @@ class _GraphDataTableState extends State<GraphDataTable> {
       filteredList.add(element);
     });
     print("newMp---${newMp}");
+    // key = newMp[0].keys.toList().first;
+    if (widget.keyVal != "0") {
+      int ele = int.parse(widget.keyVal) - 1;
+      key = newMp[0].keys.elementAt(ele);
+    }
   }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -70,78 +78,83 @@ class _GraphDataTableState extends State<GraphDataTable> {
           child: Consumer<Controller>(
             builder: (context, value, child) => Column(
               children: [
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 8.0, bottom: 8),
-                //   child: Container(
-                //     height: size.height * 0.05,
-                //     // width: 200,
-                //     // margin: EdgeInsets.only(left: 3, right:3),
-                //     child: TextFormField(
-                //       controller: value.listEditor[widget.index],
-                //       //   decoration: const InputDecoration(,
-                //       onChanged: (value) {
-                //         setState(() {
-                //           filteredList =
-                //               value.isEmpty || value == null || value == " "
-                //                   ? newMp
-                //                   : newMp
-                //                       .where((item) => item['Supplier']
-                //                               .toLowerCase()
-                //                               .contains(value.toLowerCase())
-                //                           //     ||
-                //                           // item['VALUE']
-                //                           //     .toLowerCase()
-                //                           //     .contains(text.toLowerCase())
+                widget.keyVal == "0"
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 8),
+                        child: Container(
+                          height: size.height * 0.05,
+                          // width: 200,
+                          // margin: EdgeInsets.only(left: 3, right:3),
+                          child: TextFormField(
+                            controller: value.listEditor[widget.index],
+                            //   decoration: const InputDecoration(,
+                            onChanged: (value) {
+                              setState(() {
+                                // String key = newMp[0].keys.toList().first;
+                                // print(newMp[0].keys.toList().first);
+                                print("nw----${newMp[0].keys.toList().first}");
+                                filteredList = value.isEmpty ||
+                                        value == null ||
+                                        value == " "
+                                    ? newMp
+                                    : newMp
+                                        .where((item) => item[key]
+                                                .toLowerCase()
+                                                .startsWith(value.toLowerCase())
+                                            //     ||
+                                            // item['VALUE']
+                                            //     .toLowerCase()
+                                            //     .contains(text.toLowerCase())
 
-                //                           )
-                //                       .toList();
-                //           print("after filter-------$newMp");
-                //         });
-                //       },
-                //       decoration: InputDecoration(
-                //         prefixIcon: Icon(
-                //           Icons.search,
-                //           color: Colors.blue,
-                //         ),
-                //         // suffixIcon: IconButton(
-                //         //   icon: new Icon(Icons.cancel),
-                //         //   onPressed: () {
-                //         //     // Provider.of<QuotationController>(context,
-                //         //     //         listen: false)
-                //         //     //     .setQuotSearch(false);
-                //         //     value.listEditor[widget.index].text=" ";
-                //         //     value.listEditor[widget.index].clear();
-                //         //   },
-                //         // ),
-                //         contentPadding:
-                //             EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                //         border: OutlineInputBorder(
-                //           borderRadius: BorderRadius.circular(10.0),
-                //           borderSide: const BorderSide(
-                //               color: Color.fromARGB(255, 128, 125, 125),
-                //               width: 0.0),
-                //         ),
-                //         focusedBorder: OutlineInputBorder(
-                //           borderRadius: BorderRadius.circular(10.0),
-                //           borderSide: const BorderSide(
-                //               color: Color.fromARGB(255, 128, 125, 125),
-                //               width: 0.0),
-                //         ),
-                //         enabledBorder: OutlineInputBorder(
-                //           borderRadius: BorderRadius.circular(10.0),
-                //           borderSide: BorderSide(
-                //               color: Color.fromARGB(255, 128, 125, 125),
-                //               width: 0.0),
-                //         ),
-                //         // filled: true,
-                //         hintStyle: TextStyle(color: Colors.blue, fontSize: 13),
-                //         hintText: "Search here.. ",
-                //         // fillColor: Colors.grey[100]
-                //       ),
-                //     ),
-                
-                //   ),
-                // ),
+                                            )
+                                        .toList();
+                                print("after filter-------$newMp");
+                              });
+                            },
+                            decoration: InputDecoration(
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color: Colors.blue,
+                                ),
+                                // suffixIcon: IconButton(
+                                //   icon: new Icon(Icons.cancel),
+                                //   onPressed: () {
+                                //     // Provider.of<QuotationController>(context,
+                                //     //         listen: false)
+                                //     //     .setQuotSearch(false);
+                                //     value.listEditor[widget.index].text=" ";
+                                //     value.listEditor[widget.index].clear();
+                                //   },
+                                // ),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 0),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(
+                                      color: Color.fromARGB(255, 128, 125, 125),
+                                      width: 0.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(
+                                      color: Color.fromARGB(255, 128, 125, 125),
+                                      width: 0.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 128, 125, 125),
+                                      width: 0.0),
+                                ),
+                                filled: true,
+                                hintStyle:
+                                    TextStyle(color: Colors.blue, fontSize: 13),
+                                hintText: "Search $key here.. ",
+                                fillColor: Colors.grey[100]),
+                          ),
+                        ),
+                      ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: (8.0)),
                   child: DataTable(
@@ -240,12 +253,12 @@ class _GraphDataTableState extends State<GraphDataTable> {
     var itemList = filteredList;
     for (var r = 0; r < itemList.length; r++) {
       items.add(DataRow(
-          onSelectChanged: (selected) {
-            print("selected------$selected");
-            if (selected!) {
-              showModalSheet(itemList[r]);
-            }
-          },
+          // onSelectChanged: (selected) {
+          //   print("selected------$selected");
+          //   if (selected!) {
+          //     showModalSheet(itemList[r]);
+          //   }
+          // },
           color: r == itemList.length - 1
               ? controller.text == ""
                   ? MaterialStateProperty.all(P_Settings.sumColor)

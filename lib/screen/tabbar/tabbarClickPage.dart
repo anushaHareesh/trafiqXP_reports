@@ -114,7 +114,6 @@ class _TabbarClickPageState extends State<TabbarClickPage> {
   checkShred(String br) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String key = widget.tabId + "key";
-    ;
     final rawJson = prefs.getString(key) ?? '';
     print("rawjson----$br--$key---$rawJson");
     if (rawJson == null || rawJson.isEmpty) {
@@ -257,7 +256,7 @@ class _TabbarClickPageState extends State<TabbarClickPage> {
                           ),
                         ),
                       ),
-                      // Divider(),
+                // Divider(),
                 // Padding(
                 //   padding: const EdgeInsets.all(8.0),
                 //   child: Container(
@@ -379,45 +378,48 @@ class _TabbarClickPageState extends State<TabbarClickPage> {
                     // ? size.height * (listMap["data"].length / 16)
                     // : size.height * 0.23,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        GraphDataTable(decodd: jsonEncoded, index: parentIndex),
-                        // listMap["data"].length > 4
-                        //     ? Container(
-                        //         height: 50,
-                        //         child: InkWell(
-                        //           onTap: () {
-                        //             show = !show;
-                        //             value.setShowHideText(show, parentIndex);
-                        //           },
-                        //           child: Padding(
-                        //             padding: const EdgeInsets.only(
-                        //                 right: 39.0, bottom: 20),
-                        //             child: Row(
-                        //               mainAxisAlignment: MainAxisAlignment.end,
-                        //               children: <Widget>[
-                        //                 value.descTextShowFlag[parentIndex]
-                        //                     ? Text(
-                        //                         "Show Less",
-                        //                         style: TextStyle(
-                        //                             color: P_Settings
-                        //                                 .selectedTextColor,
-                        //                             fontWeight: FontWeight.bold),
-                        //                       )
-                        //                     : Text("Show More",
-                        //                         style: TextStyle(
-                        //                             color: P_Settings
-                        //                                 .selectedTextColor,
-                        //                             fontWeight: FontWeight.bold))
-                        //               ],
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       )
-                        //     : Container()
-                      ],
-                    )),
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GraphDataTable(
+                        decodd: jsonEncoded,
+                        index: parentIndex,
+                        keyVal: listMap["search"]),
+                    // listMap["data"].length > 4
+                    //     ? Container(
+                    //         height: 50,
+                    //         child: InkWell(
+                    //           onTap: () {
+                    //             show = !show;
+                    //             value.setShowHideText(show, parentIndex);
+                    //           },
+                    //           child: Padding(
+                    //             padding: const EdgeInsets.only(
+                    //                 right: 39.0, bottom: 20),
+                    //             child: Row(
+                    //               mainAxisAlignment: MainAxisAlignment.end,
+                    //               children: <Widget>[
+                    //                 value.descTextShowFlag[parentIndex]
+                    //                     ? Text(
+                    //                         "Show Less",
+                    //                         style: TextStyle(
+                    //                             color: P_Settings
+                    //                                 .selectedTextColor,
+                    //                             fontWeight: FontWeight.bold),
+                    //                       )
+                    //                     : Text("Show More",
+                    //                         style: TextStyle(
+                    //                             color: P_Settings
+                    //                                 .selectedTextColor,
+                    //                             fontWeight: FontWeight.bold))
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       )
+                    //     : Container()
+                  ],
+                )),
                 //  Divider(thickness: 2,color: Colors.black,)
                 // Padding(
                 //     padding:

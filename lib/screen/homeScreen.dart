@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       : Flexible(
                           child: Text(
                             cname.toString(),
-                            style: TextStyle(fontSize: 17),
+                            style: TextStyle(fontSize: 13),
                           ),
                         ),
                   InkWell(
